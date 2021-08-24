@@ -22,20 +22,38 @@
     <div class="container">
         <form class="col-md-6 m-auto py-5">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="Enter a location for Weather ...">
+                <input id="city-name-input" type="text" class="form-control"
+                    placeholder="Enter a location for Weather ...">
                 <div class="input-group-append">
-                    <button type="button" class="btn btn-danger">Search</button>
+                    <button onclick="search()" type="button" class="btn btn-danger">Search</button>
                 </div>
             </div>
         </form>
         <div class="weather-status text-white text-center">
             <img src="https://openweathermap.org/img/wn/02d@2x.png" alt="">
-            <h1>Dhaka</h1>
-            <h3><span>38.06</span>&deg;C</h3>
-            <h1 class="lead">Clouds</h1>
+            <h1 id="city-name">Dhaka</h1>
+            <h3><span id="temperature">38.06</span>&deg;C</h3>
+            <h1 class="lead" id="weather-description">Clouds</h1>
         </div>
     </div>
 
+    <script>
+        function search() {
+            const cityName = document.getElementById("city-name-input").value;
+            fetch(`http://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=1be45adc8ea73d1b5ad1c4f6924c9337`)
+                .then(response => response.json())
+                .then(data => apiRequest(data))
+                .catch(error => console.log(error));
+        }
+        function apiRequest(cityName) {
+            console.log(cityName)
+            document.getElementById("city-name").innerText = cityName.name;
+            const temperatureNumber = parseInt(cityName.main.temp);
+            const temperatureToCelsius = temperatureNumber - 273.15;
+            document.getElementById("temperature").innerText = temperatureToCelsius.toFixed(2);
+            document.getElementById("weather-description").innerText = cityName.weather[0].description;
+        }
+    </script>
 </body>
 
 </html>
